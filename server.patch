@@ -60,3 +60,27 @@ index 0000000..f75bce5
 +  metadataProvider: TsMorphMetadataProvider,
 +  dynamicImportProvider: id => import(id),
 +});
+--- a/src/article/article.service.ts	2026-07-05 06:20:25
++++ b/src/article/article.service.ts	2026-07-05 06:20:35
+@@ -49,8 +49,8 @@
+     const [articles, articlesCount] = await this.articleRepository.findAndCount(where, {
+       populate: ['author'],
+       orderBy: { createdAt: 'desc' },
+-      limit: query.limit,
+-      offset: query.offset,
++      limit: query.limit !== undefined ? Number(query.limit) : undefined,
++      offset: query.offset !== undefined ? Number(query.offset) : undefined,
+     });
+ 
+     return { articles: articles.map(a => a.toJSON(user)), articlesCount };
+@@ -62,8 +62,8 @@
+       {
+         populate: ['author'],
+         orderBy: { createdAt: 'desc' },
+-        limit: query.limit,
+-        offset: query.offset,
++        limit: query.limit !== undefined ? Number(query.limit) : undefined,
++        offset: query.offset !== undefined ? Number(query.offset) : undefined,
+       },
+     );
+ 

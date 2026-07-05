@@ -14,6 +14,8 @@ services:
         RUN npm i -g corepack
         RUN yes | yarn
     command: ["yarn", "start"]
+    ports:
+      - '3000:3000'
     depends_on:
       - mysql
 
