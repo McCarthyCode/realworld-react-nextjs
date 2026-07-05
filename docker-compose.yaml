@@ -1,0 +1,38 @@
+name: 'conduit'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM node:26-alpine
+        RUN apk update && apk add --no-cache git
+        WORKDIR /app
+        RUN git clone https://github.com/mikro-orm/nestjs-realworld-example-app .
+        COPY server.patch .
+        RUN git apply server.patch
+        RUN npm i -g corepack
+        RUN yes | yarn
+    command: ["yarn", "start"]
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:9.7
+    restart: unless-stopped
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      MYSQL_DATABASE: nestjsrealworld
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - mysql:/var/lib/mysql
+
+volumes:
+  mysql:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs

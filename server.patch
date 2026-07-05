@@ -1,0 +1,62 @@
+diff --git a/.gitignore b/.gitignore
+index 5112cc5..add5a21 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -18,8 +18,8 @@ node_modules
+ .idea
+ 
+ #config files
+-src/mikro-orm.config.ts
+-src/config.ts
++#src/mikro-orm.config.ts
++#src/config.ts
+ 
+ # code testing coverage
+ coverage
+diff --git a/src/config.ts b/src/config.ts
+new file mode 100644
+index 0000000..9c60980
+--- /dev/null
++++ b/src/config.ts
+@@ -0,0 +1,18 @@
++// Don't worry about this being leaked to version control
++// It's just for demo purposes, not a real production environment
++export const SECRET = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiTWF0dCBNY0NhcnRoeSIsImFkbWluIjp0cnVlfQ.7TpHdj087mAWapU_kqwUO3hr1s2Hchxl-DlpvCrj4WI';
++
++// Header
++// {
++//   "alg": "HS256",
++//   "typ": "JWT"
++// }
++
++// Payload
++// {
++//   "name": "Matt McCarthy",
++//   "admin": true
++// }
++
++// Secret
++// hello-this-is-matt-demoing-a-project-for-outreach
+diff --git a/src/mikro-orm.config.ts b/src/mikro-orm.config.ts
+new file mode 100644
+index 0000000..f75bce5
+--- /dev/null
++++ b/src/mikro-orm.config.ts
+@@ -0,0 +1,17 @@
++import { defineConfig } from '@mikro-orm/mysql';
++import { SqlHighlighter } from '@mikro-orm/sql-highlighter';
++import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
++import { entities } from './entities.generated';
++
++export default defineConfig({
++  host: 'mysql',
++  port: 3306,
++  user: 'root',
++  password: '',
++  dbName: 'nestjsrealworld',
++  entities,
++  debug: false,
++  highlighter: new SqlHighlighter(),
++  metadataProvider: TsMorphMetadataProvider,
++  dynamicImportProvider: id => import(id),
++});
